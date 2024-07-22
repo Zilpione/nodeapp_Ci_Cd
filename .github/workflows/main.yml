@@ -33,3 +33,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  trigger_webhook:
+    name: Trigger Webhook with Tag
+    runs-on: ubuntu-latest
+    needs: push_to_registry
+    steps:
+      - name: Trigger webhook
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"tag": "${{ needs.push_to_registry.outputs.tag }}"}' \
+          https://example.com/webhook
